@@ -1,14 +1,13 @@
 
 import { StyleSheet, View, Text } from 'react-native';
+import AddTask from '@/components/AddTask';
 import React from 'react';  
 
 export default function HomeScreen() {
   return (
       <View style={styles.titleContainer}>
         <View style={styles.textContainer}>
-          <Text style={styles.centeredText}>
-            Cruifix
-          </Text>
+          <AddTask />
         </View>
 
       </View>

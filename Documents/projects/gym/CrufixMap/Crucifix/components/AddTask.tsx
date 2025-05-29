@@ -1,10 +1,25 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, PanResponder, Animated, Text, FlatList } from 'react-native';
+import { useStorage } from '@/hooks/useStorage'; // <-- Add this import
 
 export default function AddTask() {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState<string[]>([]);
   const pan = useRef(new Animated.ValueXY()).current;
+  const { save, load } = useStorage('tasks'); // <-- Add this line
+
+  // Load tasks from storage when the component mounts
+  useEffect(() => {
+    (async () => {
+      const stored = await load();
+      if (stored) setTasks(JSON.parse(stored));
+    })();
+  }, []);
+
+  // Save tasks to storage whenever they change
+  useEffect(() => {
+    save(JSON.stringify(tasks));
+  }, [tasks]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -60,46 +75,54 @@ export default function AddTask() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#222b45', // deep blue background
-    borderRadius: 14,
-    padding: 14,
-    marginVertical: 12,
+    backgroundColor: '#1e1e2f', // deep purple-blue
+    borderRadius: 16,
+    padding: 16,
+    marginVertical: 14,
     shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 10,
-    elevation: 4,
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
+    elevation: 6,
     width: '100%',
+    borderWidth: 2,
+    borderColor: '#ffbe0b', // gold accent border
   },
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 14,
   },
   input: {
     flex: 1,
-    height: 42,
+    height: 44,
     backgroundColor: '#fff',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: '#3366ff', // blue border
-    color: '#222b45',
-    fontSize: 16,
+    borderRadius: 10,
+    paddingHorizontal: 14,
+    marginRight: 12,
+    borderWidth: 2,
+    borderColor: '#3a86ff', // vibrant blue border
+    color: '#1e1e2f',
+    fontSize: 17,
   },
   list: {
-    maxHeight: 220,
+    maxHeight: 240,
   },
   taskItem: {
-    backgroundColor: '#3366ff', // blue background
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 8,
-    borderWidth: 0,
+    backgroundColor: '#ffbe0b', // gold background
+    padding: 12,
+    borderRadius: 10,
+    marginBottom: 10,
+    borderWidth: 2,
+    borderColor: '#3a86ff', // blue border for contrast
+    shadowColor: '#3a86ff',
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+    elevation: 2,
   },
   taskText: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#1e1e2f',
+    fontSize: 17,
+    fontWeight: 'bold',
   },
 });
 
